@@ -16,6 +16,8 @@ public class Main {
         ActorSystem system = ActorSystem.create("my-system");
 
         ActorRef greeter = system.actorOf(Props.create(Greeter.class), "greeter");
+
+
         greeter.tell(new Greeting("Johan"), ActorRef.noSender());
         greeter.tell(new Greeting("Stina"), ActorRef.noSender());
         greeter.tell(new Greeting("Nils"), ActorRef.noSender());

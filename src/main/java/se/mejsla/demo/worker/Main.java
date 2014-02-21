@@ -23,7 +23,8 @@ public class Main {
 
         ActorSystem system = ActorSystem.create("worker-system");
 
-        ActorRef workers = system.actorOf(Props.create(Worker.class).withRouter(new RoundRobinRouter(10)), "worker");
+        ActorRef workers = system.actorOf(Props.create(Worker.class)
+                .withRouter(new RoundRobinRouter(10)), "worker");
 
         // we wait at most this long for a reply
         Timeout timeout = new Timeout(10, TimeUnit.SECONDS);
@@ -34,16 +35,16 @@ public class Main {
 
             // ask allows us to get something back, without us being an actor as well
             Future<ResultOfWork> result = ask(workers, workItem, timeout)
-                    .map(new Mapper<Object, ResultOfWork>() {
-                        @Override
-                        public ResultOfWork apply(Object parameter) {
-                            if (parameter instanceof ResultOfWork)
-                                return (ResultOfWork) parameter;
-                            else
-                                throw new RuntimeException("Got something unexpected back");
-                        }
-                    }, system.dispatcher());
-
+                .map(new Mapper<Object, ResultOfWork>() {
+                    @Override
+                    public ResultOfWork apply(Object parameter) {
+                        if (parameter instanceof ResultOfWork)
+                            return (ResultOfWork) parameter;
+                        else
+                            throw new RuntimeException("Got something unexpected back");
+                    }
+                }, system.dispatcher());
+            
             responseFutures.add(result);
         }
         System.out.println("Done sending all messages");

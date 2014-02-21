@@ -10,7 +10,7 @@ public class Main {
 
         ActorSystem system = ActorSystem.create("system");
 
-        ActorRef actor = system.actorOf(Props.create(Supervisor.class));
+        ActorRef actor = system.actorOf(Props.create(Supervisor.class), "supervisor");
 
         for (int i = 0; i < 20; i++) {
             actor.tell("message", ActorRef.noSender());

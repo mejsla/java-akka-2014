@@ -10,8 +10,10 @@ public class Greeter extends UntypedActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
+
         if (message instanceof Greeting) {
             log.info("Hello " + ((Greeting) message).who);
+
         } else unhandled(message);
     }
 }
