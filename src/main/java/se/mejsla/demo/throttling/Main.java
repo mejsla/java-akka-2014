@@ -7,6 +7,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.contrib.throttle.Throttler;
 import akka.contrib.throttle.TimerBasedThrottler;
+import scala.Console;
 import scala.concurrent.duration.FiniteDuration;
 
 public class Main {
@@ -29,7 +30,9 @@ public class Main {
         }
         System.out.println("All messages sent!");
 
-        system.awaitTermination();
+        System.out.println("Press enter to complete");
+        Console.readLine();
+        system.shutdown();
 
     }
 }

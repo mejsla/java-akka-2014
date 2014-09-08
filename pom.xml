@@ -11,6 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <akka.version>2.3.6</akka.version>  
     </properties>
 
     <build>
@@ -22,6 +23,9 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
@@ -31,20 +35,20 @@
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_2.10</artifactId>
-            <version>2.2.3</version>
+            <version>${akka.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-contrib_2.10</artifactId>
-            <version>2.2.3</version>
+            <version>${akka.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-testkit_2.10</artifactId>
-            <version>2.2.3</version>
+            <version>${akka.version}</version>
             <scope>test</scope>
         </dependency>
 

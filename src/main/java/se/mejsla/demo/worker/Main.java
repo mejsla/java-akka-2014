@@ -8,15 +8,13 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.dispatch.*;
-import akka.japi.Procedure;
 import akka.japi.Util;
 import akka.pattern.Patterns;
-import akka.routing.RoundRobinRouter;
+import akka.routing.RoundRobinPool;
 import akka.util.Timeout;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
-import static akka.pattern.Patterns.ask;
 
 
 /**
@@ -33,8 +31,10 @@ public class Main {
 
         ActorSystem system = ActorSystem.create("worker-system");
 
-        ActorRef workers = system.actorOf(Props.create(Worker.class)
-                .withRouter(new RoundRobinRouter(10)), "worker");
+        ActorRef workers = system.actorOf(
+                new RoundRobinPool(10).props(Props.create(Worker.class)),
+                "workers");
+
 
         // we wait at most this long for a reply
         Timeout timeout = new Timeout(10, TimeUnit.SECONDS);

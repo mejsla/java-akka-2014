@@ -3,6 +3,7 @@ package se.mejsla.demo.helloworld;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import scala.Console;
 import se.mejsla.demo.helloworld.Greeter;
 import se.mejsla.demo.helloworld.Greeting;
 
@@ -22,7 +23,9 @@ public class Main {
         greeter.tell(new Greeting("Stina"), ActorRef.noSender());
         greeter.tell(new Greeting("Nils"), ActorRef.noSender());
 
-        system.awaitTermination();
+        System.out.println("Press enter to complete");
+        Console.readLine();
+        system.shutdown();
     }
 
 }

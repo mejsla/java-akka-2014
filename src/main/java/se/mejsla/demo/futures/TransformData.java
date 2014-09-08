@@ -38,6 +38,7 @@ public class TransformData {
             Future<String> futureString = Futures.future(delayedReturn(indata), context);
             listOfFutureStrings.add(futureString);
         }
+        System.out.println("All future strings created");
 
         // we want a future that is not completed until
         // all the future strings has arrived
@@ -47,7 +48,7 @@ public class TransformData {
         // those arrive
         Iterable<String> result = Await.result(futureListOfStrings, Duration.apply("20 seconds"));
 
-        System.out.println(result);
+        System.out.println("All strings arrived: " + result);
     }
 
 }

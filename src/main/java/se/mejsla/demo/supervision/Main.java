@@ -3,6 +3,7 @@ package se.mejsla.demo.supervision;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import scala.Console;
 
 public class Main {
 
@@ -16,6 +17,8 @@ public class Main {
             actor.tell("message", ActorRef.noSender());
         }
 
-        system.awaitTermination();
+        System.out.println("Press enter to complete");
+        Console.readLine();
+        system.shutdown();
     }
 }
