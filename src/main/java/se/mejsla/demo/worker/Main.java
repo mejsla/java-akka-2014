@@ -9,6 +9,8 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.dispatch.*;
 import akka.japi.Procedure;
+import akka.japi.Util;
+import akka.pattern.Patterns;
 import akka.routing.RoundRobinRouter;
 import akka.util.Timeout;
 import scala.concurrent.Await;
@@ -17,6 +19,14 @@ import scala.concurrent.duration.Duration;
 import static akka.pattern.Patterns.ask;
 
 
+/**
+ * A more complicated example where we create 10 workers that might work on units of work at the
+ * same time (they simulate CPU bound work by sleeping the thread). We send of a hundred items of
+ * work to the workers using the "ask" pattern where we will get a Future&lt;Response&gt; back.
+ *
+ * We then wait for all those futures to complete.
+ *
+ */
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -33,25 +43,20 @@ public class Main {
         for (int i = 0; i < 100; i++) {
             final OneUnitOfWork workItem = new OneUnitOfWork("Unit " + i);
 
-            // ask allows us to get something back, without us being an actor as well
-            Future<ResultOfWork> result = ask(workers, workItem, timeout)
-                .map(new Mapper<Object, ResultOfWork>() {
-                    @Override
-                    public ResultOfWork apply(Object parameter) {
-                        if (parameter instanceof ResultOfWork)
-                            return (ResultOfWork) parameter;
-                        else
-                            throw new RuntimeException("Got something unexpected back");
-                    }
-                }, system.dispatcher());
-            
-            responseFutures.add(result);
+            // ask allows us to get something back, without the calling site being and actor
+            Future<ResultOfWork> reply = Patterns.ask(workers, workItem, timeout)
+                    .mapTo(Util.classTag(ResultOfWork.class));
+
+            responseFutures.add(reply);
         }
         System.out.println("Done sending all messages");
 
+        // turn the list of future completed work units into
+        // a future list of completed work unit - this future will not be completed
+        // until all the individual work items are completed
         Future<Iterable<ResultOfWork>> futureResponse = Futures.sequence(responseFutures, system.dispatcher());
 
-
+        // this blocks the main thread until all response futures have completed
         Iterable<ResultOfWork> responses = Await.result(futureResponse, Duration.apply("20 seconds"));
         System.out.println("Completed all work: " + responses);
 

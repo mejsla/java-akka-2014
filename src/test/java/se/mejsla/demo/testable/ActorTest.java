@@ -38,7 +38,7 @@ public class ActorTest extends JavaTestKit {
 
         ref.tell("Message", ActorRef.noSender());
 
-        assertEquals(actor.getMessages().size(), 1);
+        assertEquals(actor.messages.size(), 1);
     }
 
 }
